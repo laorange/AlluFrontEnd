@@ -1,13 +1,15 @@
-import Vue from "vue";
-import App from "./App.vue";
-import store from "./store/store";
+// import ElementPlus from 'element-plus'
+// import 'element-plus/dist/index.css'
 
-Vue.config.productionTip = false;
+import { createApp } from 'vue'
+import App from './App.vue'
+import Vant from 'vant';
+import 'vant/lib/index.css';
 
-new Vue({
-    render: h => h(App),
-    store,
-    beforeCreate() {
-        Vue.prototype.$bus = this; //安装全局事件总线，$bus就是当前应用的vm
-    },
-}).$mount("#app");
+import router from "./router/"
+
+const app = createApp(App)
+
+app.use(Vant)
+app.use(router)
+app.mount('#app')
