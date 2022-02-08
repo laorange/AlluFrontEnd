@@ -2,20 +2,20 @@ import {
 	createRouter,
 	createWebHashHistory
 } from 'vue-router'
-import Course from '../components/Course.vue'
-import PDC from '../components/PDC.vue'
-import Classroom from '../components/Classroom.vue'
-import Exam from '../components/Exam.vue'
-import News from '../components/News.vue'
+import Course from '../components/Course/Course.vue'
+// import PDC from '../components/PDC/PDC.vue'
+import Classroom from '../components/Classroom/Classroom.vue'
+import Exam from '../components/Exam/Exam.vue'
+import News from '../components/News/News.vue'
 
 const routes = [{
 		path: '/',
 		component: Course
 	},
-	{
-		path: '/pdc',
-		component: PDC
-	},
+	// {
+	// 	path: '/:period(\\d+)/pdc',
+	// 	component: PDC
+	// },
 	{
 		path: '/classroom',
 		component: Classroom
