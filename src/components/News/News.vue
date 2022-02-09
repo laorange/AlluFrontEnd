@@ -3,11 +3,11 @@
 	<GroupsSelector></GroupsSelector>
 	<div class="TableHead">
 		<div class="TableHeadItem">Time</div>
-		<div class="TableHeadItem">News</div>
+		<div class="TableHeadItem Description">News</div>
 	</div>
 	<div class="TableBody" v-for="(item, index) in data.changeLogs" :key="index">
 		<div class="TableBodyItem">{{item.update_time}}</div>
-		<div class="TableBodyItem">{{item.description}}</div>
+		<div class="TableBodyItem Description">{{item.description}}</div>
 	</div>
 
 </template>
@@ -219,8 +219,7 @@
 		justify-content: space-between;
 		text-align: center;
 		width: 100%;
-		padding-top: 10px;
-		padding-bottom: 10px;
+		height: auto;
 		font-size: 10px;
 	}
 
@@ -229,5 +228,13 @@
 		flex: 1;
 		text-align: center;
 		flex-wrap: wrap;
+		height: auto;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		border: black solid 1px;
+	}
+
+	.Description {
+		flex: 2;
 	}
 </style>

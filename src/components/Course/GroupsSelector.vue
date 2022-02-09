@@ -15,7 +15,7 @@
 			<van-checkbox-group v-model="groupData.checked">
 				<van-cell-group inset>
 					<van-cell class="GroupOption" v-for="(item, index) in groupData.groupList" clickable :key="item"
-						:title="`复选框 ${item}`" @click="toggle(index)">
+						:title="`${item}`" @click="toggle(index)">
 						<template #right-icon>
 							<van-checkbox :name="item" :ref="el => groupData.checkboxRefs[index] = el" @click.stop />
 						</template>
@@ -54,7 +54,7 @@
 	})
 
 	groupData.groupText = computed(() => {
-		return groupData.checked.length > 0 ? groupData.checked.join(" | ") : "选择分组"
+		return groupData.checked.length > 0 ? groupData.checked.join("|") : ""
 	})
 
 	const toggle = (index) => {

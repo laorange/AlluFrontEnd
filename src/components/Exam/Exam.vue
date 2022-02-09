@@ -7,7 +7,7 @@
 		<div class="TableHeadItem">Subject</div>
 	</div>
 	<div class="TableBody" v-for="count in 5" :key="count">
-		<div class="TableBodyItem">06.0{{count*2-1}}</div>
+		<div class="TableBodyItem">2022.06.0{{count*2-1}}</div>
 		<div class="TableBodyItem">10:00-12:00</div>
 		<div class="TableBodyItem">某个学科</div>
 	</div>
@@ -50,14 +50,16 @@
 		justify-content: space-between;
 		text-align: center;
 		width: 100%;
-		height: 50px;
-		line-height: 50px;
+		height: auto;
 		font-size: 10px;
 	}
 
 	.TableHeadItem,
 	.TableBodyItem {
 		flex: 1;
+		padding-top: 10px;
+		padding-bottom: 10px;
 		text-align: center;
+		border: black solid 1px;
 	}
 </style>
