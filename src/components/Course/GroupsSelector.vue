@@ -2,9 +2,11 @@
   <grade-selector></grade-selector>
   <!-- ------------------ -->
   <div class="GroupSection">
-    <van-field v-model="groupData.groupText" is-link readonly label="分组" :placeholder="store.groups.length ?`选择分组`:`请先选择年级`"
+    <van-field v-model="groupData.groupText" is-link readonly label="分组" :placeholder="`选择分组`"
+               v-show="groupData.groupsFiltered && groupData.groupsFiltered.length"
                @click="groupData.showGroupPicker = !!store.semester" :center="true"/>
-    <van-popup class="GradeSelectDialog" v-model:show="groupData.showGroupPicker" round position="center" :closeable="true">
+    <van-popup class="GradeSelectDialog" v-model:show="groupData.showGroupPicker" round position="center"
+               :closeable="true">
       <van-checkbox-group v-model="store.groups">
         <van-checkbox v-for="group in groupData.groupsFiltered" class="GroupOption"
                       :key="group.group_id" :name="group">{{ group.name ? group.name : "ALL" }}
@@ -39,7 +41,7 @@ groupData.groupText = computed(() => {
   if (store.groups) {
     return Util.getGroupsName(store.groups);
   } else {
-    return "请先选择年级";
+    return "选择分组";
   }
 });
 

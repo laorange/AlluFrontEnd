@@ -70,7 +70,7 @@ const data = reactive({
   flex-direction: column;
   overflow: auto;
   flex-wrap: wrap;
-  font-size: small;
+  font-size: 1px;
 }
 
 .ScheduleCard div {

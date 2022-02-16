@@ -88,12 +88,15 @@ const showInfoDialog = (courses, classroom, whichLesson) => {
   text-align: center;
   width: 100%;
   height: 50px;
-  padding-top: 30px;
+  /*padding-top: 30px;*/
   border-bottom: white 1px solid;
 }
 
 .TableHeadItem,
 .TableBodyItem {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>
