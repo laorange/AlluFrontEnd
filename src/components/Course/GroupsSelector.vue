@@ -18,7 +18,7 @@
 import {
   reactive,
   computed,
-  onBeforeUpdate, watch, onMounted,
+  watch,
 } from "vue";
 
 import GradeSelector from "./GradeSelector";
@@ -30,11 +30,7 @@ const store = useCounterStore();
 
 const groupData = reactive({
   groupsFiltered: computed(() => {
-    function groupFilter(_group) {
-      return (_group.semester === store.semester) || !store.semester;
-    }
-
-    return store.apiData.Group.filter(groupFilter);
+    return store.apiData.Group.filter(_group => (_group.semester === store.semester) || !store.semester);
   }),
   showGroupPicker: false,
 });
@@ -61,6 +57,7 @@ watch(() => groupData.checkedGroups, () => {
 
 watch(() => groupData.showGroupPicker, () => {
   // 用户关闭对话框时，将groups数据存入localstorage
+  debugger
   if (!groupData.showGroupPicker) {
     localStorage.setItem("groups", JSON.stringify(store.groups));
   }

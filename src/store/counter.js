@@ -51,12 +51,15 @@ export const useCounterStore = defineStore("counter", {
                 this.semesterConfig = response.data;
                 this.period = parseInt(localStorage.getItem("period")) || this.semesterConfig.current_period;
                 this.semester = parseInt(localStorage.getItem("semester")) || (2 - this.semesterConfig.current_period % 2);
-                this.groups = JSON.parse(localStorage.getItem("groups")) || [];
                 localStorage.setItem("period", this.period);
                 localStorage.setItem("semester", this.semester);
-                localStorage.setItem("groups", JSON.stringify(this.groups));
                 this.axiosGetDataFromApi("Classroom");
-                this.axiosGetDataFromApi("Group");
+                this.axiosGetDataFromApi("Group", {period: this.period}, () => {
+                    let localGroups = JSON.parse(localStorage.getItem("groups")) || [];
+                    if (localGroups) {
+                        this.groups = this.apiData.Group.filter((oneGroup) => localGroups.filter(localGroup => oneGroup.group_id === localGroup.group_id).length);
+                    }
+                });
                 this.axiosGetDataFromApi("CourseChangeLog", {
                     after: Util.formatDate(new Date((new Date()) - 259200000)), limit: 20,
                 });
@@ -107,19 +110,21 @@ export const useCounterStore = defineStore("counter", {
                 this.axiosGet(url, parameters, handler);
             }
         },
-        axiosGetDataFromApi(apiName, parameters = {}) {
+        axiosGetDataFromApi(apiName, parameters = {}, callbackFunction = () => undefined) {
             let getAgain = !parameters.limit;
             if (getAgain) {
                 parameters["limit"] = 1;
             }
-            this.axiosGetWithThrottle(getUrl.getApi()[apiName], parameters, (response) => {
+            this.axiosGet(getUrl.getApi()[apiName], parameters, (response) => {
                 parameters["limit"] = response.data.count;
                 if (getAgain) {
-                    this.axiosGetWithThrottle(getUrl.getApi()[apiName], parameters, (response) => {
+                    this.axiosGet(getUrl.getApi()[apiName], parameters, (response) => {
                         this.apiData[apiName] = response.data.results;
+                        callbackFunction();
                     });
                 } else {
                     this.apiData[apiName] = response.data.results;
+                    callbackFunction();
                 }
             });
         },

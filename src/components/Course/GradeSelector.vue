@@ -13,7 +13,7 @@
 import {
   reactive,
   computed,
-  onBeforeUpdate, watch, onMounted,
+  watch,
 } from "vue";
 
 import {useCounterStore} from "../../store/counter";
@@ -29,6 +29,7 @@ const gradeData = reactive({
 const onGradeConfirm = (value) => {
   // gradeData.grade = value;
   store.semester = 2 - (store.semesterConfig.current_period % 2) + 2 * gradeData.columns.indexOf(value);
+  store.groups = [];
   gradeData.showGradePicker = false;
 };
 
