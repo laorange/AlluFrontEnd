@@ -19,4 +19,9 @@ export default {
         let _year = dayjs().year();
         return `${_year}-${_month <= 9 ? "0" + _month : _month}-${_day <= 9 ? "0" + _day : _day}`;
     },
+    getIsoWeekDay(date) {
+        date = dayjs(date);
+        let day = date.day();
+        return day === 0 ? 7 : day;
+    },
 };

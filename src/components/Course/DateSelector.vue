@@ -6,15 +6,9 @@
 </template>
 
 <script setup>
-import {
-  computed,
-  ref,
-  // onMounted
-  // defineProps
-} from "vue";
-
-import {useCounterStore} from "../../store/counter";
+import {computed, ref} from "vue";
 import Util from "../../assets/Util";
+import {useCounterStore} from "../../store/counter";
 
 const store = useCounterStore();
 

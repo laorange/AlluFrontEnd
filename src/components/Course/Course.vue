@@ -13,7 +13,7 @@
 
   <div class="Schedule">
     <div class="DaySchedule" v-for="schedule in data.scheduleList" :key="schedule.date.format() + data.isWeekMode" :style="data.CardWidth">
-      <van-cell :value="Util.formatDate(schedule.date)"
+      <van-cell :value="Util.formatDate(schedule.date)" @click="store.date = schedule.date"
                 :style="{'border-radius': '4vh', 'background-color': dayjs(store.date).isSame(dayjs(schedule.date), 'day')?'skyblue':'white'}"/>
       <schedule :courses="schedule.courses"></schedule>
     </div>
@@ -39,8 +39,8 @@ const data = reactive({
   scheduleList: computed(() => {
     let _dateList = [];
     if (data.isWeekMode) {
-      for (let count = 0; count < 7; count++) {
-        _dateList.push(dayjs(store.date).add(count - dayjs(store.date).day() + 1, "day"));
+      for (let count = 1; count <= 7; count++) {
+        _dateList.push(dayjs(store.date).add(count - Util.getIsoWeekDay(store.date), "day"));
       }
     } else {
       for (let count = 0; count < 2; count++) {
@@ -51,7 +51,7 @@ const data = reactive({
     for (const _date of _dateList) {
       _infoList.push({
             date: _date,
-            courses: store.filterCourseByDate(_date),
+            courses: store.filterCourseByDateSemesterGroups(_date),
           },
       );
     }

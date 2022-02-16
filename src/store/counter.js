@@ -136,6 +136,9 @@ export const useCounterStore = defineStore("counter", {
             });
         },
         filterCourseByDate(date) {
+            return this.apiData.Course.filter((course) => dayjs(course.date).isSame(dayjs(date), "day"));
+        },
+        filterCourseByDateSemesterGroups(date) {
             return this.apiData.Course.filter((course) => {
                 let _a = dayjs(course.date);
                 let _b = dayjs(date);

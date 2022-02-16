@@ -57,7 +57,6 @@ watch(() => groupData.checkedGroups, () => {
 
 watch(() => groupData.showGroupPicker, () => {
   // 用户关闭对话框时，将groups数据存入localstorage
-  debugger
   if (!groupData.showGroupPicker) {
     localStorage.setItem("groups", JSON.stringify(store.groups));
   }
