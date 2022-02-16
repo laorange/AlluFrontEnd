@@ -4,16 +4,11 @@
   <div class="GroupSection">
     <van-field v-model="groupData.groupText" is-link readonly label="分组" :placeholder="store.semester?`选择分组`:`请先选择年级`"
                @click="groupData.showGroupPicker = !!store.semester" :center="true"/>
-    <van-popup v-model:show="groupData.showGroupPicker" round position="bottom" :closeable="true">
-      <van-checkbox-group v-model="groupData.checkedGroups">
-        <van-cell-group inset>
-          <van-cell class="GroupOption" v-for="(item, index) in groupData.groupList" clickable :key="item"
-                    :title="`${item}`" @click="toggle(index)">
-            <template #right-icon>
-              <van-checkbox :name="item" :ref="el => groupData.checkboxRefs[index] = el" @click.stop/>
-            </template>
-          </van-cell>
-        </van-cell-group>
+    <van-popup class="GradeSelectDialog" v-model:show="groupData.showGroupPicker" round position="center" :closeable="true">
+      <van-checkbox-group v-model="store.groups">
+        <van-checkbox v-for="group in groupData.groupsFiltered" class="GroupOption"
+                      :key="group.group_id" :name="group">{{ group.name }}
+        </van-checkbox>
       </van-checkbox-group>
     </van-popup>
   </div>
@@ -29,42 +24,25 @@ import {
 import GradeSelector from "./GradeSelector";
 
 import {useCounterStore} from "../../store/counter";
+import Util from "../../assets/Util";
 
 const store = useCounterStore();
 
 const groupData = reactive({
-  groupList: computed(() => {
-    let _groups = [];
-    for (const _group of store.apiData.Group) {
-      _groups.push(_group.name);
+  groupsFiltered: computed(() => {
+    function groupFilter(_group) {
+      return (_group.semester === store.semester) || !store.semester;
     }
-    return _groups;
+
+    return store.apiData.Group.filter(groupFilter);
   }),
-  checkedGroups: function () {
-    let _checkedGroups = [];
-    for (const group of store.groups) {
-      for (const groupElement of store.api.Group) {
-        if (group === groupElement.group_id) {
-          _checkedGroups.push(groupElement.name);
-        }
-      }
-    }
-    return _checkedGroups;
-  }(),
   showGroupPicker: false,
   checkboxRefs: [],
 });
 
 groupData.groupText = computed(() => {
-  return groupData.checkedGroups.length > 0 ? groupData.checkedGroups.join("|") : "";
-});
-
-const toggle = (index) => {
-  groupData.checkboxRefs[index].toggle();
-};
-
-onBeforeUpdate(() => {
-  groupData.checkboxRefs.value = [];
+  // return groupData.checkedGroups.length > 0 ? groupData.checkedGroups.join("|") : "";
+  return Util.getGroupsName(store.groups);
 });
 
 watch(() => groupData.checkedGroups, () => {
@@ -78,12 +56,13 @@ watch(() => groupData.checkedGroups, () => {
   }
 }, {deep: true});
 
-watch(() => groupData.showGroupPicker, (showGroupPicker) => {
-  if (!showGroupPicker) {
+watch(() => groupData.checkedGroups, () => {
+  if (!groupData.showGroupPicker) {
     localStorage.setItem("groups", JSON.stringify(store.groups));
-    store.axiosGetDataFromApi("Course", {period: store.period, plan__groups: store.groups});
+    // store.axiosGetDataFromApi("Course", {period: store.period, plan__groups: store.groups});
+    store.axiosOneStopGetData();
   }
-});
+}, {deep: true});
 </script>
 
 <style>
@@ -103,8 +82,24 @@ watch(() => groupData.showGroupPicker, (showGroupPicker) => {
   text-align: center;
 }
 
+.GradeSelectDialog {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
 .GroupOption {
   width: 95%;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+van-checkbox-group {
+  width: 300px;
 }
 
 /*

@@ -26,10 +26,6 @@ const gradeData = reactive({
   showGradePicker: false,
 });
 
-watch(() => gradeData.grade, (newGrade) => {
-  console.log("newGrade", newGrade);
-});
-
 const onGradeConfirm = (value) => {
   // gradeData.grade = value;
   store.semester = 2 - (store.semesterConfig.current_period % 2) + 2 * gradeData.columns.indexOf(value);

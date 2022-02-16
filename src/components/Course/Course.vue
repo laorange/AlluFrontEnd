@@ -13,8 +13,8 @@
 
   <div class="Schedule">
     <template v-if="!data.isWeekMode">
-      <div class="DaySchedule" v-for="(count, index) in 2" :key="index" style="width: calc(50% - 4px)">
-        <van-cell value="xxxx.xx.xx" :style="{'border-radius': '4vh'}"/>
+      <div class="DaySchedule" v-for="date in data.dateList" :key="date.valueOf()" :style="data.CardWidth">
+        <van-cell :value="Util.formatDate(date)" :style="{'border-radius': '4vh'}"/>
         <schedule></schedule>
         <schedule></schedule>
         <schedule></schedule>
@@ -23,8 +23,8 @@
       </div>
     </template>
     <template v-if="data.isWeekMode">
-      <div class="DaySchedule" v-for="(count, index) in 7" :key="index" style="width: calc(14% - 14px)">
-        <van-cell value="xxxx.xx.xx" :style="{'border-radius': '4vh'}"/>
+      <div class="DaySchedule" v-for="date in data.dateList" :key="date.valueOf()" :style="data.CardWidth">
+        <van-cell :value="Util.formatDate(date)" :style="{'border-radius': '4vh'}"/>
         <schedule></schedule>
         <schedule></schedule>
         <schedule></schedule>
@@ -39,18 +39,34 @@
 
 <script setup>
 import {
-  reactive, onMounted,
+  reactive, onMounted, computed,
 } from "vue";
 
+import dayjs from "dayjs";
 import DateSelector from "./DateSelector.vue";
 import GroupSelector from "./GroupsSelector.vue";
 import Schedule from "./Schedule.vue";
+import Util from "../../assets/Util";
 import {useCounterStore} from "../../store/counter";
 
 const store = useCounterStore();
 
 const data = reactive({
   isWeekMode: document.documentElement.clientWidth > 800,
+  dateList: computed(() => {
+    let _dateList = [];
+    if (data.isWeekMode) {
+      for (let count = 0; count < 7; count++) {
+        _dateList.push(dayjs(store.date).add(count - dayjs(store.date).day() + 2, "day"));
+      }
+    } else {
+      for (let count = 0; count < 2; count++) {
+        _dateList.push(dayjs(store.date).add(count, "day"));
+      }
+    }
+    return _dateList;
+  }),
+  CardWidth: computed(() => data.isWeekMode ? {width: "calc(14% - 14px)"} : {width: "calc(50% - 4px)"}),
 });
 
 onMounted(() => {

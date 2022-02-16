@@ -14,20 +14,11 @@ import {
 } from "vue";
 
 import {useCounterStore} from "../../store/counter";
+import Util from "../../assets/Util";
 
 const store = useCounterStore();
 
-import {
-  Calendar,
-  Cell,
-} from "vant";
-
-const formatDate = (date) => {
-  let _month = date.getMonth() + 1;
-  let _day = date.getDate();
-  return `${date.getUTCFullYear()}-${_month <= 9 ? "0" + _month : _month}-${_day <= 9 ? "0" + _day : _day}`;
-};
-const dateTxt = computed(() => formatDate(store.date));
+const dateTxt = computed(() => Util.formatDate(store.date));
 const show = ref(false);
 
 const onConfirm = (value) => {
