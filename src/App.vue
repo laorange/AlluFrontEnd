@@ -2,13 +2,13 @@
   <router-view></router-view>
   <!-- <div class="tabbarAssistant"></div> -->
   <tabbar></tabbar>
-<!--  <loading-mask></loading-mask>-->
+    <loading-mask></loading-mask>
 </template>
 
 <script setup>
 // import AlluHeader from "./components/AlluHeader.vue"
 import Tabbar from "./components/Tabbar.vue";
-// import LoadingMask from "./components/LoadingMask";
+import LoadingMask from "./components/LoadingMask";
 import {onMounted, watch} from "vue";
 import {useCounterStore} from "./store/counter";
 

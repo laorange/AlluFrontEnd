@@ -1,11 +1,14 @@
 import {createApp} from "vue";
 import App from "./App.vue";
 import Vant from "vant";
-import "@vant/touch-emulator";
 import "vant/lib/index.css";
+import "@vant/touch-emulator";
 
 import router from "./router/";
 import {createPinia} from "pinia";
+
+// import {Notify} from "vant";
+// app.use(Notify);
 
 // import ElementPlus from "element-plus";
 // import "element-plus/dist/index.css";

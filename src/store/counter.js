@@ -11,7 +11,7 @@ export const useCounterStore = defineStore("counter", {
             isLoading: false,
             period: undefined,
             semester: undefined,
-            date: new Date(),
+            date: dayjs(new Date()),
             groups: [],
             semesterConfig: {
                 "current_period": 30,
@@ -21,6 +21,8 @@ export const useCounterStore = defineStore("counter", {
             },
             apiData: {
                 Group: [],
+                Course: [],
+                CourseChangeLog: [],
             },
         };
     },
@@ -45,22 +47,20 @@ export const useCounterStore = defineStore("counter", {
     },
     actions: {
         onMountedHook() {
-            this.axiosGetWithThrottle(getUrl.getApi().SemesterConfig, undefined, (response) => {
-                if (response.data.count) {
-                    this.semesterConfig = response.data.results[0];
-                    this.period = parseInt(localStorage.getItem("period")) || this.semesterConfig.current_period;
-                    this.semester = parseInt(localStorage.getItem("semester")) || (2 - this.semesterConfig.current_period % 2);
-                    this.groups = JSON.parse(localStorage.getItem("groups")) || [];
-                    localStorage.setItem("period", this.period);
-                    localStorage.setItem("semester", this.semester);
-                    localStorage.setItem("groups", JSON.stringify(this.groups));
-                    this.axiosGetDataFromApi("Classroom");
-                    this.axiosGetDataFromApi("Group");
-                    this.axiosGetDataFromApi("CourseChangeLog", {
-                        after: Util.formatDate(new Date((new Date()) - 259200000)), limit: 20,
-                    });
-                    this.axiosGetRecentCourse();
-                }
+            this.axiosGetWithThrottle(getUrl.getApi().SemesterConfig + "1/", undefined, (response) => {
+                this.semesterConfig = response.data;
+                this.period = parseInt(localStorage.getItem("period")) || this.semesterConfig.current_period;
+                this.semester = parseInt(localStorage.getItem("semester")) || (2 - this.semesterConfig.current_period % 2);
+                this.groups = JSON.parse(localStorage.getItem("groups")) || [];
+                localStorage.setItem("period", this.period);
+                localStorage.setItem("semester", this.semester);
+                localStorage.setItem("groups", JSON.stringify(this.groups));
+                this.axiosGetDataFromApi("Classroom");
+                this.axiosGetDataFromApi("Group");
+                this.axiosGetDataFromApi("CourseChangeLog", {
+                    after: Util.formatDate(new Date((new Date()) - 259200000)), limit: 20,
+                });
+                this.axiosGetRecentCourse();
             });
         },
         axiosGet(url, parameters = {}, handler = () => {
@@ -125,8 +125,27 @@ export const useCounterStore = defineStore("counter", {
         },
         axiosGetRecentCourse() {
             this.axiosGetDataFromApi("Course", {
+                period: this.period,
                 // after: Util.formatDate(dayjs(this.date).add(-7, "day")),
                 // before: Util.formatDate(dayjs(this.date).add(7, "day")),
+            });
+        },
+        filterCourseByDate(date) {
+            return this.apiData.Course.filter((course) => {
+                let _a = dayjs(course.date);
+                let _b = dayjs(date);
+                if (!_a.isSame(_b, "day")) {
+                    return false;
+                }
+                if (this.semester >= 15) {
+                    this.groups = [];
+                    return true;
+                } else if (course.semester && course.semester !== this.semester) {
+                    console.log(course.semester, this.semester);
+                    return false;
+                }
+                let groupIds = JSON.parse(course.group_ids);
+                return !this.groups.length || this.groups.filter(group => groupIds.indexOf(group.group_id) > -1).length;
             });
         },
         myReset() {

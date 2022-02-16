@@ -2,12 +2,12 @@
   <grade-selector></grade-selector>
   <!-- ------------------ -->
   <div class="GroupSection">
-    <van-field v-model="groupData.groupText" is-link readonly label="分组" :placeholder="store.semester?`选择分组`:`请先选择年级`"
+    <van-field v-model="groupData.groupText" is-link readonly label="分组" :placeholder="store.groups.length ?`选择分组`:`请先选择年级`"
                @click="groupData.showGroupPicker = !!store.semester" :center="true"/>
     <van-popup class="GradeSelectDialog" v-model:show="groupData.showGroupPicker" round position="center" :closeable="true">
       <van-checkbox-group v-model="store.groups">
         <van-checkbox v-for="group in groupData.groupsFiltered" class="GroupOption"
-                      :key="group.group_id" :name="group">{{ group.name }}
+                      :key="group.group_id" :name="group">{{ group.name ? group.name : "ALL" }}
         </van-checkbox>
       </van-checkbox-group>
     </van-popup>
@@ -37,15 +37,18 @@ const groupData = reactive({
     return store.apiData.Group.filter(groupFilter);
   }),
   showGroupPicker: false,
-  checkboxRefs: [],
 });
 
 groupData.groupText = computed(() => {
-  // return groupData.checkedGroups.length > 0 ? groupData.checkedGroups.join("|") : "";
-  return Util.getGroupsName(store.groups);
+  if (store.groups) {
+    return Util.getGroupsName(store.groups);
+  } else {
+    return "请先选择年级";
+  }
 });
 
 watch(() => groupData.checkedGroups, () => {
+  // 用户选择了分组，将数据加入到store中
   store.groups = [];
   for (const checkedGroup of groupData.checkedGroups) {
     for (const apiGroup of store.apiData.Group) {
@@ -56,13 +59,13 @@ watch(() => groupData.checkedGroups, () => {
   }
 }, {deep: true});
 
-watch(() => groupData.checkedGroups, () => {
+watch(() => groupData.showGroupPicker, () => {
+  // 用户关闭对话框时，将groups数据存入localstorage
   if (!groupData.showGroupPicker) {
     localStorage.setItem("groups", JSON.stringify(store.groups));
-    // store.axiosGetDataFromApi("Course", {period: store.period, plan__groups: store.groups});
-    store.axiosOneStopGetData();
   }
-}, {deep: true});
+});
+
 </script>
 
 <style>

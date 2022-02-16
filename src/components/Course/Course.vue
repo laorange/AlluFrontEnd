@@ -12,34 +12,17 @@
   </van-cell>
 
   <div class="Schedule">
-    <template v-if="!data.isWeekMode">
-      <div class="DaySchedule" v-for="date in data.dateList" :key="date.valueOf()" :style="data.CardWidth">
-        <van-cell :value="Util.formatDate(date)" :style="{'border-radius': '4vh'}"/>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-      </div>
-    </template>
-    <template v-if="data.isWeekMode">
-      <div class="DaySchedule" v-for="date in data.dateList" :key="date.valueOf()" :style="data.CardWidth">
-        <van-cell :value="Util.formatDate(date)" :style="{'border-radius': '4vh'}"/>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-        <schedule></schedule>
-      </div>
-    </template>
-
+    <div class="DaySchedule" v-for="schedule in data.scheduleList" :key="schedule.date.format() + data.isWeekMode" :style="data.CardWidth">
+      <van-cell :value="Util.formatDate(schedule.date)"
+                :style="{'border-radius': '4vh', 'background-color': dayjs(store.date).isSame(dayjs(schedule.date), 'day')?'skyblue':'white'}"/>
+      <schedule :courses="schedule.courses"></schedule>
+    </div>
   </div>
-
 </template>
 
 <script setup>
 import {
-  reactive, onMounted, computed,
+  reactive, computed,
 } from "vue";
 
 import dayjs from "dayjs";
@@ -53,24 +36,28 @@ const store = useCounterStore();
 
 const data = reactive({
   isWeekMode: document.documentElement.clientWidth > 800,
-  dateList: computed(() => {
+  scheduleList: computed(() => {
     let _dateList = [];
     if (data.isWeekMode) {
       for (let count = 0; count < 7; count++) {
-        _dateList.push(dayjs(store.date).add(count - dayjs(store.date).day() + 2, "day"));
+        _dateList.push(dayjs(store.date).add(count - dayjs(store.date).day() + 1, "day"));
       }
     } else {
       for (let count = 0; count < 2; count++) {
         _dateList.push(dayjs(store.date).add(count, "day"));
       }
     }
-    return _dateList;
+    let _infoList = [];
+    for (const _date of _dateList) {
+      _infoList.push({
+            date: _date,
+            courses: store.filterCourseByDate(_date),
+          },
+      );
+    }
+    return _infoList;
   }),
   CardWidth: computed(() => data.isWeekMode ? {width: "calc(14% - 14px)"} : {width: "calc(50% - 4px)"}),
-});
-
-onMounted(() => {
-  // store.axiosGetDataFromApi("Course");
 });
 </script>
 
@@ -82,9 +69,7 @@ onMounted(() => {
 
 .DaySchedule {
   flex: 1;
-
   border: #efefef 1px solid;
-  /* padding-right: 10px; */
   flex-direction: column;
 }
 </style>

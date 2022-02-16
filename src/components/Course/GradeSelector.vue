@@ -21,7 +21,7 @@ import {useCounterStore} from "../../store/counter";
 const store = useCounterStore();
 
 const gradeData = reactive({
-  columns: ["大一", "大二", "大三", "大四", "研一", "研二"],
+  columns: ["大一", "大二", "大三", "大四", "研一", "研二", "研三", "不限"],
   grade: computed(() => gradeData.columns[parseInt((store.semester + 1) / 2) - 1]),
   showGradePicker: false,
 });
@@ -31,6 +31,11 @@ const onGradeConfirm = (value) => {
   store.semester = 2 - (store.semesterConfig.current_period % 2) + 2 * gradeData.columns.indexOf(value);
   gradeData.showGradePicker = false;
 };
+
+watch(() => store.semester, (newSemester) => {
+  // semester变更，将数据存入localstorage
+  localStorage.setItem("semester", `${newSemester}`);
+});
 </script>
 
 <style scoped>
