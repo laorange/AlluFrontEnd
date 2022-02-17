@@ -45,7 +45,7 @@ const data = reactive({
     for (const course of props.courses) {
       _courseDivided[course.which_lesson - 1].push({
         ...course,
-        groups: Util.getGroupsName(store.apiData.Group.filter(group => JSON.parse(course.group_ids).indexOf(group.group_id) > -1)),
+        groups: store.getGroupsTextOfCourse(course),
       });
     }
     return _courseDivided;

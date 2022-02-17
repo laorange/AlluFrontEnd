@@ -1,12 +1,12 @@
 <template>
   <div class="Course">
-    <h1>课表</h1>
+    <h1>第 {{ data.week }} 周</h1>
   </div>
   <date-selector></date-selector>
   <group-selector></group-selector>
 
   <van-cell center title="周视图" value="在大屏幕设备上建议开启">
-    <template #right-icon>
+    <template>
       <van-switch v-model="data.isWeekMode" size="24" inactive-color="#dcdee0"/>
     </template>
   </van-cell>
@@ -58,6 +58,7 @@ const data = reactive({
     return _infoList;
   }),
   CardWidth: computed(() => data.isWeekMode ? {width: "calc(14% - 14px)"} : {width: "calc(50% - 4px)"}),
+  week: computed(() => Math.floor((dayjs(store.date) - dayjs(store.semesterConfig.week1_monday_date)) / 604800000) + 1),
 });
 </script>
 

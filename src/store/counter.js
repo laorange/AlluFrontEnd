@@ -135,26 +135,28 @@ export const useCounterStore = defineStore("counter", {
                 // before: Util.formatDate(dayjs(this.date).add(7, "day")),
             });
         },
-        filterCourseByDate(date) {
-            return this.apiData.Course.filter((course) => dayjs(course.date).isSame(dayjs(date), "day"));
+        filterCourseByDate(date = this.date, courses = this.apiData.Course) {
+            return courses.filter((course) => dayjs(course.date).isSame(dayjs(date), "day"));
         },
-        filterCourseByDateSemesterGroups(date) {
-            return this.apiData.Course.filter((course) => {
-                let _a = dayjs(course.date);
-                let _b = dayjs(date);
-                if (!_a.isSame(_b, "day")) {
-                    return false;
-                }
+        filterCourseBySemester(semester = this.semester, courses = this.apiData.Course) {
+            return courses.filter((course) => {
                 if (this.semester >= 15) {
                     this.groups = [];
                     return true;
-                } else if (course.semester && course.semester !== this.semester) {
-                    console.log(course.semester, this.semester);
-                    return false;
-                }
-                let groupIds = JSON.parse(course.group_ids);
-                return !this.groups.length || this.groups.filter(group => groupIds.indexOf(group.group_id) > -1).length;
+                } else return !(course.semester && course.semester !== semester);
             });
+        },
+        filterCourseByGroups(groups = this.groups, courses = this.apiData.Course) {
+            return courses.filter((course) => {
+                let groupIds = JSON.parse(course.group_ids);
+                return !groups.length || groups.filter(group => groupIds.indexOf(group.group_id) > -1).length;
+            });
+        },
+        filterCourseByDateSemesterGroups(date, semester, groups, courses = this.apiData.Course) {
+            return this.filterCourseByGroups(undefined, this.filterCourseBySemester(undefined, this.filterCourseByDate(date, courses)));
+        },
+        getGroupsTextOfCourse(course) {
+            return Util.getGroupsName(this.apiData.Group.filter(group => JSON.parse(course.group_ids).indexOf(group.group_id) > -1));
         },
         myReset() {
             this.$reset();

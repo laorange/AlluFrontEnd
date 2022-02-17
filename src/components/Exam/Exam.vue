@@ -1,65 +1,57 @@
 <template>
-	<h1>Exam</h1>
-	<GroupsSelector></GroupsSelector>
-	<div class="TableHead">
-		<div class="TableHeadItem">Date</div>
-		<div class="TableHeadItem">Remark</div>
-		<div class="TableHeadItem">Subject</div>
-	</div>
-	<div class="TableBody" v-for="count in 5" :key="count">
-		<div class="TableBodyItem">2022.06.0{{count*2-1}}</div>
-		<div class="TableBodyItem">10:00-12:00</div>
-		<div class="TableBodyItem">某个学科</div>
-	</div>
+  <h1>Exam</h1>
+  <date-selector></date-selector>
+  <GroupsSelector></GroupsSelector>
+
+  <template v-if="!data.examList.length">
+    <h1>暂无考试安排</h1>
+  </template>
+  <template v-else>
+    <template v-for="exam in data.examList" :key="exam.course_id">
+      <van-cell :title="exam.date"
+                :center="true" class="ExamCard" :style="{'background-color': '#' + exam.color}">
+        <template #label>
+          <div style="color: black">{{ exam.note }}</div>
+        </template>
+        <template #value>
+          <div style="color: black">
+            <div>{{ exam.ch_name }}</div>
+            <div>{{ store.getGroupsTextOfCourse(exam) }}</div>
+          </div>
+        </template>
+        <template #extra>
+          <van-count-down :time="dayjs(exam.date) - dayjs(store.date)" v-if="dayjs(store.date).isBefore(dayjs(exam.date))">
+            <template #default="timeData">
+              <van-tag type="primary">{{ timeData.days + 1 }}天</van-tag>
+            </template>
+          </van-count-down>
+          <van-tag type="success" v-if="dayjs(store.date).isAfter(dayjs(exam.date))">结束</van-tag>
+          <van-tag type="danger" v-if="dayjs(store.date).isSame(dayjs(exam.date), 'day')">今天</van-tag>
+        </template>
+      </van-cell>
+    </template>
+  </template>
 
 </template>
 
 <script setup>
-	import {
-		reactive
-	} from "vue"
+import {computed, reactive} from "vue";
 
-	import {
-		Dialog
-	} from 'vant';
+import GroupsSelector from "../Course/GroupsSelector.vue";
+import DateSelector from "../Course/DateSelector.vue";
 
-	import GroupsSelector from "../Course/GroupsSelector.vue"
+import {useCounterStore} from "../../store/counter";
+import dayjs from "dayjs";
 
-	// const data = reactive({
-	// 		isPopupShow: false,
-	// })
+const store = useCounterStore();
+const data = reactive({
+  examList: computed(() => store.filterCourseByGroups(undefined, store.filterCourseBySemester()).filter(course => course.method === "DS")),
+});
 
-	// const showInfoDialog = (context) => {
-	// 	Dialog.alert({
-	// 		message: `${context.room}教室的第${context.which_lesson}节课`,
-	// 	}).then(() => {
-	// 		// on close
-	// 	});
-	// }
 </script>
 
-<style scoped>
-	.TableHead {
-		margin-top: 1.5rem;
-	}
-
-	.TableHead,
-	.TableBody {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		text-align: center;
-		width: 100%;
-		height: auto;
-		font-size: 10px;
-	}
-
-	.TableHeadItem,
-	.TableBodyItem {
-		flex: 1;
-		padding-top: 10px;
-		padding-bottom: 10px;
-		text-align: center;
-		border: black solid 1px;
-	}
+<style>
+.ExamCard {
+  color: black;
+}
 </style>
