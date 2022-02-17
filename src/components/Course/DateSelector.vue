@@ -1,7 +1,8 @@
 <template>
   <div class="DateSelector">
     <van-cell title="选择日期" is-link :value="dateTxt" @click="show = true"/>
-    <van-calendar v-model:show="show" @confirm="onConfirm" :show-confirm="false" :min-date="new Date(2022,1,1)"/>
+    <van-calendar v-model:show="show" @confirm="onConfirm" first-day-of-week="1"
+                  :show-confirm="false" :min-date="new Date(2022,1,1)"/>
   </div>
 </template>
 
