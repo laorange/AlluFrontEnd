@@ -2,7 +2,7 @@
   <h1>News</h1>
   <GroupsSelector></GroupsSelector>
 
-  <template v-for="notice in store.apiData.Notice" :key="notice.notice_id">
+  <template v-for="notice in data.noticeList" :key="notice.notice_id">
     <template v-if="notice.link">
       <van-notice-bar left-icon="guide-o" :text="notice.content" speed="50" mode="link" @click="redirect(notice.link)"/>
     </template>
@@ -61,6 +61,11 @@ const getLogIconName = (logInstance) => {
 };
 
 const data = reactive({
+  noticeList: computed(() => {
+    let _noticeList = store.apiData.Notice;
+    _noticeList.sort((a, b) => b.priority - a.priority);
+    return _noticeList;
+  }),
   logList: computed(() => {
     let _logs = store.filterCourseByGroups(undefined, store.filterCourseBySemester(undefined, store.apiData.CourseChangeLog));
     _logs.reverse();
