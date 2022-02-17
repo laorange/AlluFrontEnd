@@ -2,6 +2,15 @@
   <h1>News</h1>
   <GroupsSelector></GroupsSelector>
 
+  <template v-for="notice in store.apiData.Notice" :key="notice.notice_id">
+    <template v-if="notice.link">
+      <van-notice-bar left-icon="guide-o" :text="notice.content" speed="50" mode="link" @click="redirect(notice.link)"/>
+    </template>
+    <template v-else>
+      <van-notice-bar left-icon="volume-o" :text="notice.content" speed="50"/>
+    </template>
+  </template>
+
   <template v-if="!data.logList.length">
     <h3>No change in the last three days</h3>
   </template>
@@ -36,6 +45,10 @@ import Util from "../../assets/Util";
 
 const store = useCounterStore();
 
+const redirect = (url) => {
+  window.location.href = url;
+};
+
 const getLogIconName = (logInstance) => {
   switch (logInstance.action) {
     case "Update":
@@ -51,11 +64,14 @@ const data = reactive({
   logList: computed(() => {
     let _logs = store.filterCourseByGroups(undefined, store.filterCourseBySemester(undefined, store.apiData.CourseChangeLog));
     _logs.reverse();
-    return _logs
+    return _logs;
   }),
 });
 </script>
 
 <style scoped>
-
+.van-notice-bar {
+  margin: 5px;
+  border-radius: 4vh;
+}
 </style>

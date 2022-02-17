@@ -20,9 +20,23 @@ export const useCounterStore = defineStore("counter", {
                 "max_week": 20,
             },
             apiData: {
-                Group: [],
-                Course: [],
-                CourseChangeLog: [],
+                "Classroom": [],
+                "Classroom2d": [],
+                "Course": [],
+                "Course2d": [],
+                "CourseChangeLog": [],
+                "CourseForPost": [],
+                "CourseInfo": [],
+                "CourseInfo2d": [],
+                "CourseInfo3d": [],
+                "CoursePlan": [],
+                "CoursePlan2d": [],
+                "CourseType": [],
+                "Group": [],
+                "Group2d": [],
+                "Notice": [],
+                "SemesterConfig": [],
+                "Teacher": [],
             },
         };
     },
@@ -54,12 +68,13 @@ export const useCounterStore = defineStore("counter", {
                 localStorage.setItem("period", this.period);
                 localStorage.setItem("semester", this.semester);
                 this.axiosGetDataFromApi("Classroom");
-                this.axiosGetDataFromApi("Group", {period: this.period}, () => {
-                    let localGroups = JSON.parse(localStorage.getItem("groups")) || [];
-                    if (localGroups) {
+                this.axiosGetDataFromApi("Notice", {validity: true});
+                let localGroups = JSON.parse(localStorage.getItem("groups")) || [];
+                if (!localGroups.length) {
+                    this.axiosGetDataFromApi("Group", {period: this.period}, () => {
                         this.groups = this.apiData.Group.filter((oneGroup) => localGroups.filter(localGroup => oneGroup.group_id === localGroup.group_id).length);
-                    }
-                });
+                    });
+                }
                 this.axiosGetDataFromApi("CourseChangeLog", {
                     after: Util.formatDate(dayjs().add(-3, "day")),  // , limit: 20,
                 });

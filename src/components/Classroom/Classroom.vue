@@ -1,6 +1,7 @@
 <template>
   <h1>Classroom</h1>
   <date-selector></date-selector>
+
   <div class="TableHead">
     <div class="TableHeadItem">教室</div>
     <div class="TableHeadItem">1</div>
@@ -10,15 +11,17 @@
     <div class="TableHeadItem">5</div>
   </div>
 
-  <div class="TableBody" v-for="classroom in store.apiData.Classroom" :key="classroom.room_id">
-    <div class="TableBodyItem">{{ classroom.name }}</div>
+  <template v-for="classroom in store.apiData.Classroom" :key="classroom.room_id">
+    <div class="TableBody" v-if="classroom.is_common">
+      <div class="TableBodyItem">{{ classroom.name }}</div>
 
-    <div class="TableBodyItem" v-for="whichLesson in 5" :key="whichLesson"
-         @click="showInfoDialog(data.courseFilter(classroom.room_id, whichLesson), classroom, whichLesson)">
-      <van-icon name="close" color="#FF5555" v-if="data.courseFilter(classroom.room_id, whichLesson).length"/>
-      <van-icon name="passed" color="#009900" v-else/>
+      <div class="TableBodyItem" v-for="whichLesson in 5" :key="whichLesson"
+           @click="showInfoDialog(data.courseFilter(classroom.room_id, whichLesson), classroom, whichLesson)">
+        <van-icon name="close" color="#FF5555" v-if="data.courseFilter(classroom.room_id, whichLesson).length"/>
+        <van-icon name="passed" color="#009900" v-else/>
+      </div>
     </div>
-  </div>
+  </template>
 
 </template>
 
