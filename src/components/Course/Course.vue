@@ -6,7 +6,7 @@
   <group-selector></group-selector>
 
   <van-cell center title="周视图" value="在大屏幕设备上建议开启">
-    <template>
+    <template #extra>
       <van-switch v-model="data.isWeekMode" size="24" inactive-color="#dcdee0"/>
     </template>
   </van-cell>

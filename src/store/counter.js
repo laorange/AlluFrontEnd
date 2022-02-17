@@ -61,7 +61,7 @@ export const useCounterStore = defineStore("counter", {
                     }
                 });
                 this.axiosGetDataFromApi("CourseChangeLog", {
-                    after: Util.formatDate(new Date((new Date()) - 259200000)), limit: 20,
+                    after: Util.formatDate(dayjs().add(-3, "day")),  // , limit: 20,
                 });
                 this.axiosGetRecentCourse();
             });

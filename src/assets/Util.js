@@ -14,10 +14,15 @@ export default {
     },
     formatDate(date) {
         date = dayjs(date);
-        let _month = date.month() + 1;
-        let _day = date.date();
-        let _year = dayjs().year();
-        return `${_year}-${_month <= 9 ? "0" + _month : _month}-${_day <= 9 ? "0" + _day : _day}`;
+        return date.format("YYYY-MM-DD")
+    },
+    formatTime(time) {
+        time = dayjs(time);
+        return time.format("HH:mm:ss");
+    },
+    formatDatetime(datetime) {
+        datetime = dayjs(datetime);
+        return datetime.format("YYYY-MM-DD HH:mm:ss");
     },
     getIsoWeekDay(date) {
         date = dayjs(date);
