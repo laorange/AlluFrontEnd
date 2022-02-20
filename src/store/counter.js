@@ -64,7 +64,7 @@ export const useCounterStore = defineStore("counter", {
             this.axiosGetWithThrottle(getUrl.getApi().SemesterConfig + "1/", undefined, (response) => {
                 this.semesterConfig = response.data;
                 this.period = parseInt(localStorage.getItem("period")) || this.semesterConfig.current_period;
-                this.semester = parseInt(localStorage.getItem("semester")) || (2 - this.semesterConfig.current_period % 2);
+                this.semester = parseInt(localStorage.getItem("semester")) || (16 - this.semesterConfig.current_period % 2);
                 localStorage.setItem("period", this.period);
                 localStorage.setItem("semester", this.semester);
                 this.axiosGetDataFromApi("Classroom");
