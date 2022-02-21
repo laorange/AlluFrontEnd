@@ -2,6 +2,9 @@
   <div class="Course">
     <h1>第 {{ data.week }} 周</h1>
   </div>
+
+  <NoticeBar :threshold="1000"></NoticeBar>
+
   <date-selector></date-selector>
   <group-selector></group-selector>
 
@@ -30,6 +33,8 @@ import DateSelector from "./DateSelector.vue";
 import GroupSelector from "./GroupsSelector.vue";
 import Schedule from "./Schedule.vue";
 import Util from "../../assets/Util";
+import NoticeBar from "../NoticeBar";
+
 import {useCounterStore} from "../../store/counter";
 
 const store = useCounterStore();

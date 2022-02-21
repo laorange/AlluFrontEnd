@@ -1,15 +1,7 @@
 <template>
   <h1>News</h1>
   <GroupsSelector></GroupsSelector>
-
-  <template v-for="notice in data.noticeList" :key="notice.notice_id">
-    <template v-if="notice.link">
-      <van-notice-bar left-icon="guide-o" :text="notice.content" speed="50" mode="link" @click="redirect(notice.link)"/>
-    </template>
-    <template v-else>
-      <van-notice-bar left-icon="volume-o" :text="notice.content" speed="50"/>
-    </template>
-  </template>
+  <NoticeBar></NoticeBar>
 
   <template v-if="!data.logList.length">
     <h3>No change in the last three days</h3>
@@ -39,15 +31,12 @@ import {
   reactive,
 } from "vue";
 
-import {useCounterStore} from "../../store/counter";
 import GroupsSelector from "../Course/GroupsSelector.vue";
 import Util from "../../assets/Util";
+import NoticeBar from "../NoticeBar";
+import {useCounterStore} from "../../store/counter";
 
 const store = useCounterStore();
-
-const redirect = (url) => {
-  window.location.href = url;
-};
 
 const getLogIconName = (logInstance) => {
   switch (logInstance.action) {
@@ -75,8 +64,5 @@ const data = reactive({
 </script>
 
 <style scoped>
-.van-notice-bar {
-  margin: 5px;
-  border-radius: 4vh;
-}
+
 </style>

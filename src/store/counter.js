@@ -102,7 +102,7 @@ export const useCounterStore = defineStore("counter", {
                     }
                 }
             }
-            console.log("url", url);
+            // console.log("url", url);
             axios.get(url).then(
                 response => {
                     handler(response);
